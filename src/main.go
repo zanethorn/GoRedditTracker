@@ -226,6 +226,19 @@ func (rf *RedditFetcher) GetNewPosts(subreddit string) (posts []RedditPostWrappe
 	var data RedditResponse
 	json.Unmarshal(body, &data)
 
+	// calculate rate limit information to determine delay between requests
+	rateRemaining, err := strconv.ParseFloat(response.Header.Get("x-ratelimit-remaining"), 32)
+	if err != nil {
+		return nil, err
+	}
+	rateReset, err := strconv.ParseFloat(response.Header.Get("x-ratelimit-reset"), 32)
+	if err != nil {
+		return nil, err
+	}
+
+	sleepTime := rateReset / rateRemaining
+	defer time.Sleep(time.Duration(sleepTime) * time.Second)
+
 	return data.Data.Children, nil
 }
 

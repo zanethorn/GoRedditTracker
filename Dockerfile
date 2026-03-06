@@ -3,7 +3,7 @@ FROM golang:${GO_VERSION}-alpine as base
 
 WORKDIR /usr/src/reddit_tracker
 
-COPY go.mod go.sum ./
+COPY go.mod ./
 RUN go mod download
 
 FROM base as build

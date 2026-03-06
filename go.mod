@@ -1,1 +1,3 @@
-module redit_scanner
+module main
+
+go 1.26
